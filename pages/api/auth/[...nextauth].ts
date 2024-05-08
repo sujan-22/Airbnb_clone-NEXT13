@@ -28,7 +28,7 @@ export const authOptions: AuthOptions = {
                     throw new Error("Invalid credentials");
                 }
 
-                const user = await prisma?.user.findUnique({
+                const user = await client?.user.findUnique({
                     where: {
                         email: credentials.email,
                     },
