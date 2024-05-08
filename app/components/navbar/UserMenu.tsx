@@ -2,7 +2,7 @@
 
 import { AiOutlineMenu } from "react-icons/ai";
 import Avatar from "../Avatar";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import MenuItem from "./MenuItem";
 import useRegisterModal from "@/app/hooks/useRegisterModal";
 import useLoginModal from "@/app/hooks/useLoginModal";
@@ -34,6 +34,26 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
         rentModal.onOpen();
     }, [currentUser, loginModal, rentModal]);
 
+    useEffect(() => {
+        const closeMenu = () => {
+            setIsOpen(false);
+        };
+
+        if (isOpen) {
+            document.addEventListener("click", closeMenu);
+        } else {
+            document.removeEventListener("click", closeMenu);
+        }
+
+        return () => {
+            document.removeEventListener("click", closeMenu);
+        };
+    }, [isOpen]);
+
+    const stopPropagation = (e: React.MouseEvent) => {
+        e.stopPropagation();
+    };
+
     return (
         <div className="relative">
             <div className="flex flex-row items-center gap-3">
@@ -54,7 +74,10 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                 </div>
             </div>
             {isOpen && (
-                <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
+                <div
+                    className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm"
+                    onClick={stopPropagation}
+                >
                     <div className="flex flex-col cursor-pointer">
                         {currentUser ? (
                             <>
@@ -63,7 +86,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                                     label="My Trips"
                                 />
                                 <MenuItem
-                                    onClick={() => {}}
+                                    onClick={() => router.push("/favourites")}
                                     label="My Favourites"
                                 />
                                 <MenuItem
@@ -71,7 +94,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                                     label="My Reservations"
                                 />
                                 <MenuItem
-                                    onClick={() => {}}
+                                    onClick={() => router.push("/properties")}
                                     label="My Properties"
                                 />
                                 <MenuItem
